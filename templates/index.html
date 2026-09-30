@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Predict Employee Salaries with <span>AI</span></h1>
+        <p>A Multiple Linear Regression model built for BSc Computer Science Final Year Project.</p>
+        <div class="hero-buttons">
+            <a href="/predict" class="btn btn-primary">Predict Salary</a>
+            <a href="/about" class="btn btn-secondary">About Project</a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <h2>Why SalaryPredict AI?</h2>
+    <div class="cards-grid">
+        <div class="card">
+            <h3>Machine Learning</h3>
+            <p>Uses Scikit-Learn's Multiple Linear Regression to accurately predict salaries based on 6 key factors.</p>
+        </div>
+        <div class="card">
+            <h3>Data Driven</h3>
+            <p>Visualizes relationships between Experience, Age, Education, and Salary using interactive Chart.js graphs.</p>
+        </div>
+        <div class="card">
+            <h3>Beginner Friendly</h3>
+            <p>Clean, professional code structure ideal for a final-year project demonstration and viva presentation.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Dataset Dashboard</h2>
+    <p>Model Evaluation and Data Visualization</p>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% else %}
+
+<!-- Key Statistics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <h4>Total Employees</h4>
+        <div class="stat-value">{{ stats.total_employees }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>Average Salary</h4>
+        <div class="stat-value">₹ {{ "%.2f"|format(stats.avg_salary) }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>Min Salary</h4>
+        <div class="stat-value">₹ {{ "%.2f"|format(stats.min_salary) }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>Max Salary</h4>
+        <div class="stat-value">₹ {{ "%.2f"|format(stats.max_salary) }}</div>
+    </div>
+</div>
+
+<!-- Model Metrics -->
+{% if metrics %}
+<div class="metrics-section">
+    <h3>Model Performance</h3>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-name">R² Score</div>
+            <div class="metric-value">{{ "%.4f"|format(metrics.R2_Score) }}</div>
+            <p>Closer to 1 is better</p>
+        </div>
+        <div class="metric-card">
+            <div class="metric-name">MAE</div>
+            <div class="metric-value">₹ {{ "%.2f"|format(metrics.MAE) }}</div>
+            <p>Mean Absolute Error</p>
+        </div>
+        <div class="metric-card">
+            <div class="metric-name">MSE</div>
+            <div class="metric-value">₹ {{ "%.2f"|format(metrics.MSE) }}</div>
+            <p>Mean Squared Error</p>
+        </div>
+        <div class="metric-card">
+            <div class="metric-name">RMSE</div>
+            <div class="metric-value">₹ {{ "%.2f"|format(metrics.RMSE) }}</div>
+            <p>Root Mean Squared Error</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Charts -->
+<div class="charts-container">
+    <div class="chart-wrapper">
+        <canvas id="expSalaryChart"></canvas>
+    </div>
+    <div class="chart-wrapper">
+        <canvas id="ageSalaryChart"></canvas>
+    </div>
+    <div class="chart-wrapper">
+        <canvas id="eduSalaryChart"></canvas>
+    </div>
+    <div class="chart-wrapper">
+        <canvas id="actualVsPredChart"></canvas>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if not error and chart_data %}
+<script>
+    // Load data from backend
+    const chartData = {{ chart_data|tojson }};
+    
+    // Theme colors
+    const colors = {
+        primary: 'rgba(79, 70, 229, 0.7)',
+        secondary: 'rgba(16, 185, 129, 0.7)',
+        accent: 'rgba(245, 158, 11, 0.7)'
+    };
+    
+    // 1. Experience vs Salary (Scatter)
+    const ctxExp = document.getElementById('expSalaryChart').getContext('2d');
+    new Chart(ctxExp, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Experience vs Salary',
+                data: chartData.exp.map((e, i) => ({x: e, y: chartData.salary[i]})),
+                backgroundColor: colors.primary
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { title: { display: true, text: 'Experience vs Salary' } },
+            scales: { x: { title: { display: true, text: 'Years of Experience' } }, y: { title: { display: true, text: 'Salary' } } }
+        }
+    });
+
+    // 2. Age vs Salary (Scatter)
+    const ctxAge = document.getElementById('ageSalaryChart').getContext('2d');
+    new Chart(ctxAge, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Age vs Salary',
+                data: chartData.age.map((a, i) => ({x: a, y: chartData.salary[i]})),
+                backgroundColor: colors.secondary
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { title: { display: true, text: 'Age vs Salary' } },
+            scales: { x: { title: { display: true, text: 'Age' } }, y: { title: { display: true, text: 'Salary' } } }
+        }
+    });
+
+    // 3. Education Level vs Average Salary (Bar)
+    // Calculate averages
+    let eduAvgs = [0, 0, 0, 0];
+    let eduCounts = [0, 0, 0, 0];
+    for (let i=0; i<chartData.education.length; i++) {
+        let level = chartData.education[i];
+        eduAvgs[level] += chartData.salary[i];
+        eduCounts[level]++;
+    }
+    for (let i=0; i<4; i++) {
+        if (eduCounts[i] > 0) eduAvgs[i] /= eduCounts[i];
+    }
+    
+    const ctxEdu = document.getElementById('eduSalaryChart').getContext('2d');
+    new Chart(ctxEdu, {
+        type: 'bar',
+        data: {
+            labels: ['High School', 'Bachelor\'s', 'Master\'s', 'PhD'],
+            datasets: [{
+                label: 'Average Salary',
+                data: eduAvgs,
+                backgroundColor: colors.accent
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { title: { display: true, text: 'Average Salary by Education Level' } }
+        }
+    });
+
+    // 4. Actual vs Predicted (Scatter)
+    const ctxActual = document.getElementById('actualVsPredChart').getContext('2d');
+    new Chart(ctxActual, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Actual vs Predicted',
+                data: chartData.salary.map((s, i) => ({x: s, y: chartData.predicted[i]})),
+                backgroundColor: 'rgba(239, 68, 68, 0.7)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { title: { display: true, text: 'Actual vs Predicted Salary' } },
+            scales: { x: { title: { display: true, text: 'Actual Salary' } }, y: { title: { display: true, text: 'Predicted Salary' } } }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

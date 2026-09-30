@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>About Project</h2>
+    <p>BSc Computer Science Final Year Project</p>
+</div>
+
+<div class="about-container">
+    <div class="about-section">
+        <h3>What is SalaryPredict AI?</h3>
+        <p>SalaryPredict AI is an end-to-end Machine Learning web application designed to predict an employee's salary based on several key factors. It serves as a practical demonstration of integrating AI models into a functional web interface.</p>
+    </div>
+
+    <div class="about-section">
+        <h3>Why Salary Prediction?</h3>
+        <p>Predicting salaries is useful for HR departments to ensure fair compensation, for companies to budget accurately, and for potential employees to estimate their market value based on their experience and skills.</p>
+    </div>
+
+    <div class="about-section">
+        <h3>What is Multiple Linear Regression?</h3>
+        <p>Multiple Linear Regression is a statistical technique that uses several explanatory variables to predict the outcome of a response variable. In this project, the response variable is Salary, and the explanatory variables are Age, Experience, Education, Job Level, Working Hours, and Previous Experience.</p>
+    </div>
+
+    <div class="about-section">
+        <h3>Technologies Used</h3>
+        <ul class="tech-list">
+            <li><strong>Python:</strong> Core programming language.</li>
+            <li><strong>Flask:</strong> Web framework for the backend.</li>
+            <li><strong>Scikit-Learn:</strong> Machine learning library for building the regression model.</li>
+            <li><strong>Pandas & NumPy:</strong> Data manipulation and mathematical operations.</li>
+            <li><strong>HTML5/CSS3/JavaScript:</strong> Frontend design and interactivity.</li>
+            <li><strong>Chart.js:</strong> Data visualization on the dashboard.</li>
+        </ul>
+    </div>
+    
+    <div class="about-section">
+        <h3>Advantages & Limitations</h3>
+        <div class="adv-lim-grid">
+            <div class="adv">
+                <h4>Advantages</h4>
+                <ul>
+                    <li>Fast and simple prediction.</li>
+                    <li>Interpretability of features.</li>
+                    <li>Easy to deploy and use.</li>
+                </ul>
+            </div>
+            <div class="lim">
+                <h4>Limitations</h4>
+                <ul>
+                    <li>Assumes linear relationship which might not always hold true.</li>
+                    <li>Sensitive to outliers.</li>
+                    <li>Dummy dataset used for demonstration.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Predict Salary</h2>
+    <p>Enter employee details to estimate their salary.</p>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
+<div class="form-container">
+    <form action="/predict" method="POST" class="predict-form">
+        <div class="form-group">
+            <label for="age">Age (years)</label>
+            <input type="number" id="age" name="age" min="18" max="100" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="years_exp">Years of Experience</label>
+            <input type="number" id="years_exp" name="years_exp" step="0.1" min="0" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="education">Education Level</label>
+            <select id="education" name="education" required>
+                <option value="0">High School</option>
+                <option value="1">Bachelor's Degree</option>
+                <option value="2">Master's Degree</option>
+                <option value="3">PhD</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="job_level">Job Level</label>
+            <select id="job_level" name="job_level" required>
+                <option value="1">Junior</option>
+                <option value="2">Mid-Level</option>
+                <option value="3">Senior</option>
+                <option value="4">Manager</option>
+                <option value="5">Director</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="working_hours">Working Hours (per week)</label>
+            <input type="number" id="working_hours" name="working_hours" step="0.1" min="10" max="100" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="prev_exp">Previous Experience (years)</label>
+            <input type="number" id="prev_exp" name="prev_exp" step="0.1" min="0" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Predict Salary</button>
+    </form>
+</div>
+
+{% if prediction %}
+<div class="result-container">
+    <h3>Predicted Salary</h3>
+    <div class="salary-value">{{ prediction }}</div>
+</div>
+{% endif %}
+
+{% endblock %}
